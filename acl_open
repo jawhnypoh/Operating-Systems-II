@@ -1,0 +1,201 @@
+#!/bin/bash
+#
+# Open up a directory to be readable and/or writable by another user via acls
+#
+# robh, 1/2007
+
+
+# Defaults
+action_txt="read/write"
+mask="rw-"
+maskx="rwx"
+perm="rw-"
+permx="rwx"
+userorgroup="user"
+
+
+while getopts ":rg" opt; do
+  case $opt in
+    r)
+   	action_txt="read-only"
+   	mask="rw-"
+   	maskx="rwx"
+   	perm="r--"
+   	permx="r-x"
+      	;;
+    g)
+	userorgroup="group"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+
+# shift off what we've already seen and get the final args
+shift $(( OPTIND-1 ))
+directory=$1
+extrauser=$2
+
+# Make sure we got the required args
+if [ -z "$directory" -o -z "$extrauser" ]
+then
+   echo "USAGE: $0 [-r] [-g] directory [user|group]"
+   echo
+   echo "  -r   read-only (default is read/write)"
+   echo "  -g   supplied value is a group instead of user"
+   echo
+   exit
+fi
+
+if [ ! -d "$directory" ]
+then
+  echo Directory $directory not found
+  exit
+fi
+
+# We get the group or user from getent so we can make sure it is valid
+if [ "$userorgroup" = "user" ]
+then
+  tmp=`getent passwd $extrauser | head -1 | awk -F: '{print $1}'`
+elif [ $userorgroup = "group" ]
+then
+  tmp=`getent group $extrauser | head -1 | awk -F: '{print $1}'`
+else
+  echo "ERROR: invalid userorgroup $userorgroup so seek help"
+  exit
+fi
+
+# If all is well, the supplied user is the same as the value from getent
+if [ "$extrauser" != "$tmp" ]
+then
+  echo ERROR: It appears that the $userorgroup \"$extrauser\" does not exist
+  exit
+fi
+
+cd $directory || (echo unable to cd to $directory; exit)
+
+#
+# Just a sanity check to be sure we aren't in our homedir
+if [ "$PWD" = "/u/$USER" ]
+then
+  echo You cannot use this to open up your home directory
+  exit
+fi
+
+#
+# Make sure we don't run this as root
+if [ "$USER" = "root" ]
+then
+   echo "ERROR: we will not run this as root"
+   exit
+fi
+
+#
+# Make sure the user owns this directory
+dirowner=`ls -ld . |awk '{print $3}'`
+if [ "$dirowner" != "$USER" -a "$USER" != "root" ]
+then
+   echo "You ($USER) are not the owner of $directory ($dirowner)"
+   exit
+fi
+
+#
+# Make sure the users are different
+if [ "$USER" = "$extrauser" ]
+then
+   echo You specified the user as yourself which I find confusing
+   exit
+fi
+
+#
+# 
+echo This script is ready to enable $action_txt access for $userorgroup $extrauser
+echo to the following directory and all of its contents:
+echo
+echo "    $PWD"
+echo
+echo -n Hit Enter to continue or Ctrl-C to abort.
+read
+echo
+echo -n "Working.."
+
+# Set all the dirs to be r/w by the current user and the supplied extra user
+# NOTE: It looks like there is a bug in RHEL4 that causes some ACLs not to be set properly.  Setting the
+#       regular ACLs and then the default ACLS (or both on in the same setfacl command) causes problems.
+#       Setting the defaults and then the regular ACLs with a sleep between them seems to minimize the
+#       chance of the problem.  This problem seems to be fixed in Fecora Core 6 (and hopefully rhel5).
+#find . -type d -exec setfacl -m user:${USER}:rwx,user:${extrauser}:rwx,mask:rwx,default:user:${USER}:rwx,default:user:${extrauser}:rwx,default:mask:rwx {} \;
+find . -type d -exec setfacl -m default:user:${USER}:rwx,default:${userorgroup}:${extrauser}:$permx,default:mask:$maskx {} \;
+echo -n "."
+sleep 3
+find . -type d -exec setfacl -m user:${USER}:rwx,${userorgroup}:${extrauser}:$permx,mask:$maskx {} \;
+echo -n "."
+
+# Set the files to be r/w by both users.
+#   First the executables
+find . -type f -perm -0100 -exec setfacl -m user:${USER}:rwx,${userorgroup}:${extrauser}:$permx,mask:$maskx {} \;
+echo -n "."
+#   Then the non-executables
+find . -type f -a ! -perm -0100 -exec setfacl -m user:${USER}:rw-,${userorgroup}:${extrauser}:$perm,mask:$mask {} \;
+echo
+
+
+# We build the list of directories leading up to $directory so we can enable search permissions
+path=$PWD
+pathstring=""
+
+while [ "$path" != "/" ]
+do
+  path=`dirname $path`
+  dirowner=`ls -ld $path/. |awk '{print $3}'`
+  if [ "$dirowner" != "$USER" ]
+  then
+    path="/"
+  else
+    if ! ls -ld $path/. | egrep "^d........x " > /dev/null
+    then
+      pathstring="$path $pathstring"
+    fi
+  fi
+
+done
+
+# If $pathstring is empty we are done
+if [ -z "$pathstring" ]
+then
+  exit
+fi
+
+setfacl="setfacl -m ${userorgroup}:${extrauser}:--x,mask:--x $pathstring"
+
+cat << EOF
+
+===============================================================================
+The directory $directory should now be $action_txt for the $userorgroup $extrauser.
+However, please note that you will still need to open up search permissions
+for the directories leading up to this directory.
+
+You should be able to enable these search permissions by running:
+
+  $setfacl
+
+EOF
+
+echo -n "Would you like to run this now (y/n) [y]? "
+read ans
+if [ "$ans" = "" -o "$ans" = "y" -o "$ans" = "Y" -o "$ans" = "yes" -o "$ans" = "Yes" -o "$ans" = "YES" ]
+then
+  $setfacl
+  echo
+  echo "Done."
+else
+  echo
+  echo ============================================================================
+  echo The setfacl command was NOT run so you will need to ensure that $userorgroup $extrauser
+  echo has search permissions for the following directories:
+  echo
+  echo "  $pathstring"
+  echo
+fi
+
