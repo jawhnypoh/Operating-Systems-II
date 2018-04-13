@@ -1,0 +1,189 @@
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage[singlespacing]{setspace}
+\usepackage[letterpaper,margin=0.75in]{geometry}
+
+\usepackage{graphicx}                               
+\usepackage{amssymb}                                    
+\usepackage{amsmath}                                    
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                      
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage[utf8]{inputenc}
+
+\def\name{Yeongae Lee, Johonny Chunyi Po, Andrew Davis}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs444 ``operating systemsII''},
+  pdftitle = {CS 444 HW 1},
+  pdfsubject = {CS 444 Project 1},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{titlepage}
+
+    \begin{center}
+        \vspace*{5cm}
+        
+        \textbf{CS 444 Project 1}
+
+        \vspace{1.5cm}
+
+        \textbf{Yeongae Lee, Johonny Chunyi Po, Andrew Davis}
+
+        \vspace{0.8cm}
+
+        Oregon State University\\
+        CS 444\\
+        Spring 2018\\
+        15 April 2018\\
+
+        \vspace{0.8cm}
+
+        \textbf{Abstract}\\
+
+        \vspace{0.5cm}
+
+        Here
+
+        \vfill
+    \end{center}
+\end{titlepage}
+
+\newpage
+
+
+\section{Commands}
+
+    \begin{enumerate}
+        \item git clone https://git.yoctoproject.org/git/linux-yocto
+        \item cd linux-yocto
+        \item git checkout v3.19.2
+        \item cd /scratch/spring2018/
+        \item mkdir group39
+        \item git clone https://git.yoctoproject.org/git/linux-yocto
+        \item cd linux-yocto
+        \item git checkout v3.19.2
+        \item cd /scratch/opt/
+        \item cp config-3.19.2-yocto-standard 
+        \item mv config-3.19.2-yocto-standard .config 
+        \item make -j4 all
+        \item make clean
+        \item make menuconfig
+        \item make -j4 all
+        \item cd /scratch/files/ 
+        \item qemu-system-i386 -gdb tcp::5539 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+        \item cp core-image-lsb-sdk-qemux86.ext4 /scratch/spring2018/gourp39/linux-yocto
+        \item cp bzImage-qemux86.bin /scratch/spring2018/gourp39/linux-yocto
+        \item qemu-system-i386 -gdb tcp::5539 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+        \item gdi
+        \item target remote localhost:5539
+        \item
+        \item
+        \item
+        \item
+        \item
+        \item
+        \item
+        \item
+        \item
+        \item
+    \end{enumerate}
+    
+    
+\section{Questions}
+
+    \begin{enumerate}
+        \item What do you think the main point of this assignment is? \\
+            Anwser should be here
+            
+        \item How did you personally approach the problem? Design decisions, algorithm, etc. \\
+            Anwser should be here
+            
+        \item How did you ensure your solution was correct? Testing details, for instance. \\
+            Anwser should be here
+            
+        \item What did you learn? \\
+            Anwser should be here
+            
+    \end{enumerate}
+ 
+
+\section{Version control log}
+
+    \begin{tabular}{l l l }
+        \hline
+         Date & Author & Description \\
+        \hline
+         4/12/2018 & Johnny & Initial Commit  \\
+         4/12/2018 & Johnny & First commit and push to repo \\
+         4/12/2018 & Johnny & Merge branch 'master' of https://github.com/jawhnypoh/Operating-Systems-II \\
+         4/12/2018 & Johnny & Deleted acl_open - unnecessary file \\
+         4/13/2018 & Yeongae & Made Assignment1 directory \\
+         4/13/2018 & Yeongae & Changed main.tex \\
+         
+         %more commits should be here 
+         
+         
+        \hline
+    \end{tabular}
+
+
+\section{Work log}
+
+    \begin{tabular}{l l l l }
+        \hline
+         Date & Title & Author & Description \\
+        \hline
+         4/7/2018 & VM and qemu & Johonny & Built kernel and run qemu \\
+         4/9/2018 & VM and qemu & Andrew & Built kernel and run qemu \\
+         4/9/2018 & VM and qemu & Yeongae & Built kernel and run qemu \\
+         4/12/2018 & Version control & Johonny & Opened git repository \\
+         4/13/2018 & LaTeX & Yeongae & Wrote LaTeX file outline\\
+         4/13/2018 & Write-up & Johnny & Wrote LaTeX file \\
+         4/13/2018 & Write-up & Yeongae & Wrote LaTeX file \\
+        \hline
+    \end{tabular}
+    
+
+\begin{thebibliography}{9}
+ 
+    \bibitem{knuthwebsite} 
+    D. Kevin McGrath: makefile,
+    \\\texttt{http://web.engr.oregonstate.edu/cgi-bin/cgiwrap/dmcgrath/classes/17F/cs444/index.cgi?
+    \\examples=examples/makefile}
+  
+    \bibitem{knuthwebsite} 
+    D. Kevin McGrath: example.tex,
+    \\\texttt{http://web.engr.oregonstate.edu/cgi-bin/cgiwrap/dmcgrath/classes/17F/cs444/index.cgi?
+    \\examples=examples/example.tex}
+
+\end{thebibliography}
+
+
+\end{document}
