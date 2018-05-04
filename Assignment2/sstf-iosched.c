@@ -25,13 +25,39 @@ static int sstf_dispatch(struct request_queue *q, int force) {
   printk("LOOK Algorithm: sstf_dispatch() is starting up the dispatch \n");
 
   // TODO: Sort and handle the requests
+  if(!list_empty(&sd->queue)){
+
+    struct request *rq;
+
+    rq = list_entry(sd->enqueue.next, struct request, queuelist);
+    list_del_init(&rq->queuelist);
+    elv_dispatch_sort(q, rq);
+
+    return 1;
+  }
+  return 0; 
 }
 
 static void sstf_add_request(struct request_queue *q, struct request *rq) {
   struct sstf_data *sd = q->elevator->elevator_data;
-  struct request *next_rq, *previous_rq;
+  struct request *next_rq; 
+  struct request *previous_rq;
 
   // TODO: Finish up add function 
+
+  if(list_empty(&sd->queue)){
+    //list is empty, simply add new queue
+    list_add(rq->rueuelist, &sd->queue);
+  }
+  else{
+    struct list_head* head;
+    list_for_each(head, &sd->queue){
+
+
+
+
+    }
+  }
 }
 
 static struct request *
