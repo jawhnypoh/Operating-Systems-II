@@ -24,7 +24,6 @@ static int sstf_dispatch(struct request_queue *q, int force) {
   struct sstf_data *sd = q->elevator->elevator_data;
   printk("LOOK Algorithm: sstf_dispatch() is starting up the dispatch \n");
 
-  // TODO: Sort and handle the requests
   if(!list_empty(&sd->queue)){
 
     struct request *rq;
@@ -40,8 +39,8 @@ static int sstf_dispatch(struct request_queue *q, int force) {
 
 static void sstf_add_request(struct request_queue *q, struct request *rq) {
   struct sstf_data *sd = q->elevator->elevator_data;
-  struct request *next_rq; 
-  struct request *previous_rq;
+  //struct request *next_rq; 
+  //struct request *previous_rq;
 
   // TODO: Finish up add function 
 
@@ -51,11 +50,14 @@ static void sstf_add_request(struct request_queue *q, struct request *rq) {
   }
   else{
     struct list_head* head;
+    sector_t new = blk_rq_pos(rq);
+    sector_t current = blk_rq_pos(head);
+
     list_for_each(head, &sd->queue){
-
-
-
-
+      if(curr_req_sector <= new_req_sector){
+        list_add(&rq->queuelist, head);
+	break;
+      }
     }
   }
 }
