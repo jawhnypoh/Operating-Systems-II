@@ -1,0 +1,143 @@
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage[singlespacing]{setspace}
+\usepackage[letterpaper,margin=0.75in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\newcommand{\toc}{\tableofcontents}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage[utf8]{inputenc}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {Yeongae Lee, Johnny Po, Andrew Davis},
+  pdfkeywords = {CS444 ``Operating Systems II''},
+  pdftitle = {CS 444 HW 2},
+  pdfsubject = {CS 444 Project 2},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{titlepage}
+
+    \begin{center}
+        \vspace*{5cm}
+        
+        \textbf{CS 444 Project 2}
+
+        \vspace{1.5cm}
+
+        \textbf{Yeongae Lee, Johonny Po, Andrew Davis}
+
+        \vspace{0.8cm}
+
+        Oregon State University\\
+        CS 444\\
+        Spring 2018\\
+        6 March 2018\\
+
+        \vspace{0.8cm}
+
+        \textbf{Abstract}\\
+
+        \vspace{0.5cm}
+
+        Abstract should be here!!!
+
+
+        \vfill
+    \end{center}
+\end{titlepage}
+
+\newpage
+
+
+\section{Design}
+	The LOOK scheduler code is similar with the noop scheduler code. The ‘add’ function should be changed to convert the noop scheduler to the LOOK scheduler. The noop scheduler is based in FIFO, so it just need to add new schedule on the head of list. However, the LOOK scheduler decides request locations based on the sector value. First, we have to check the list is empty or not. If it is empty, we just simply add a request into the empty list. If the list already has requests, the scheduler has to compare sector with pre-entered request sectors. For example, if the list request sector values are 1, 4, 5, 8 and new request enters which has 6 as sector. New request should be between 5 and 8. Add function find spot to put new request and push into the list. 
+
+    
+    
+\section{Questions}
+
+    \begin{enumerate}
+        \item What do you think the main point of this assignment is? \\
+            %Here
+            The main point of this assignment is to teach the concept and idea of I/O Schedulers. Through conducting a bunch of research, we also have the chance to learn the different schedulers and how each of them are implemented and how each of them function. Through this assignment, we also learned how elevator algorithms work, as well as how to properly use the qemu virtual machine. 
+            
+        \item How did you personally approach the problem? Design decisions, algorithm, etc. \\
+            We searched about the scheduler algorithms. Before we start to write the LOOK or C-LOOK scheduler, we had to understand how this algorithm works. LOOK sorts the order of requests based on the sector number. Each request has the sector number. When the scheduler gets a request, a request has the sector number. The scheduler compares new request sector number with pre-entered request sector numbers. Then, the scheduler is located new request into the list of requests We got somewhat idea from the noop scheduler. The noop scheduler algorithm is FIFO. We changed ‘add’ function of the noop scheduler to complete LOOK scheduler. 
+            
+        \item How did you ensure your solution was correct? Testing details, for instance. \\
+         We run the scheduler on the wrong Linux version. We installed Linux again. Then, we put all changed files into the block directory. When we run makefile, it created sstf-iosched.o file. It was successfully compiled.
+
+        \item What did you learn? \\
+            We learned divers I/O schedulers and differences between them. We searched how I/O schedulers sort randomly ordered requests. We especially focused on investing the LOOK algorithms because we had to write the LOOK I/O scheduler. We got basic code outline from noop scheduler in the block directory. We also learned how to compile LOOK I/O scheduler and run it on the qemu virtual machine.   
+
+            
+        \item How should the TA evaluate your work? Provide detailed steps to prove correctness. \\
+            We submitted Assignment2.patch file. Makefile and  Kconfig.iosched fixed. Also, we created sstf-iosched.c file. TAs have to patch Assignment2.patch file into /linux-yocto-3.19/block directory. Then, they have to run I/O elevator on the VM. 
+
+            
+    \end{enumerate}
+ 
+
+\section{Version Control Log}
+
+\begin{tabular}{l l l}\textbf{Detail} & \textbf{Author} & \textbf{Description}\\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/ba11cd86e157b7ddd316466b4f3fa4160d6dc1a2} & Yeongae Lee & Created Assignment2 folder  \\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/52962d28e395878e5a8ae0fd88d5b86fb2baa14b} & Yeongae Lee & Created Write-up folder \\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/357516be84d0e7bd7566a48166b43a916c6a739c} & Johnny Po & modified sstf-iosched.c \\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/d4f0676e4debc2d5a73a90fa0d2cc272cc2af0de} & Yeongae Lee & Changed sstf-iosched.c file \\\hline 
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/099a26b74d695d2f75d56e29ebc746a291d8681f} & Yeongae Lee & Fixed sstf-iosched.c file\\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/436c867d441d8ac497a827a69cc6da726b600212} & Johnny Po & Final update for sstf-iosched.c \\\hline 
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/a61d132ab004f063d6668cda8b7d98644e084fcf} & Johnny Po & Added Makefile and Kconfig.iosched \\\hline
+        \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/abaf512e267daf96e1c1fd3dfb573474bffa7d91} & Johnny Po & Updating makefile and Kconfig \\\hline
+         %add more
+         
+\end{tabular}
+
+
+\section{Work Log}
+
+    \begin{tabular}{l l l l }
+        \hline
+         Date & Title & Author & Description \\
+        \hline
+         5/1/2018 & I/O Elevators & Johnny & Started to write sstf\-iosched.c file \\
+         5/4/2018 & I/O Elevators & Yeongae  & Started edited sstf\-iosched.c and Kconfig.iosched file \\
+         5/4/2018 & Writing & Yeongae & Created Writing file \\
+         5/5/2018 & I/O Elevators & Yeongae & Started edited Makefile and  file \\
+         5/5/2018 & Writing & Johnny & Answered writing questions \\
+         5/5/2018 & I/O Elevators & Johnny & edited sstf\-iosched.c file \\
+         5/5/2018 & Writing & Yeongae & Answered writing questions \\
+         5/6/2018 & VM & Johnny & compiled and run files on the VM \\
+         5/6/2018 & Writing & Yeongae & compiled writing \\
+         %add more
+         \hline
+    \end{tabular}
+\end{document}
