@@ -36,4 +36,4 @@ obj-$(CONFIG_BLK_WBT)		+= blk-wbt.o
 obj-$(CONFIG_BLK_DEBUG_FS)	+= blk-mq-debugfs.o
 obj-$(CONFIG_BLK_SED_OPAL)	+= sed-opal.o
 
-obj-$(CONFIG_IOSCHED_SSTF)	+= sstf-iosched.o
+obj-$(CONFIG_IOSCHED_LOOK)	+= sstf-iosched.o

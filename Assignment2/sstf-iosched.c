@@ -15,7 +15,7 @@ struct sstf_data {
   // Add representations for the request direction and the head
   int direction;
   sector_t head;
-}
+};
 
 static void sstf_merged_requests(struct request_queue *q, struct request *rq,
   struct request *next) {
@@ -31,7 +31,7 @@ static int sstf_dispatch(struct request_queue *q, int force) {
 
     // Next and previous requests get the request that's greater/less than the current node
     next_rq = list_entry(sd->queue.next, struct request, queuelist);
-    previous_rq = list_entry(sd->queue.prev, struct requst, queuelist);
+    previous_rq = list_entry(sd->queue.prev, struct request, queuelist);
 
     // Evaluate the nodes in the list
     if(next_rq != previous_rq) {
@@ -81,7 +81,7 @@ static int sstf_dispatch(struct request_queue *q, int force) {
     sd->head = blk_rq_pos(rq) + blk_rq_sectors(rq);
 
     // Send the elevator request
-    elevator_dispatch_add_tail(q, rq);
+    elv_dispatch_add_tail(q, rq);
 
     printk("sstf_dispatch() has finished running. \n");
     printk("sstf_dispatch(): SSTF reading: %llu\n", (unsigned long long) rq->__sector);
@@ -184,7 +184,7 @@ static struct elevator_type elevator_sstf = {
     .elevator_init_fn         = sstf_init_queue,
     .elevator_exit_fn         = sstf_exit_queue,
   },
-  .elevator_name = "sstf"
+  .elevator_name = "look",
   .elevator_owner = THIS_MODULE,
 };
 
