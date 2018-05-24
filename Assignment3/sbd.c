@@ -14,18 +14,29 @@
 #include <linux/fs.h>     /* everything... */
 #include <linux/errno.h>  /* error codes */
 #include <linux/types.h>  /* size_t */
-#include <linux/vmalloc.h>
+#include <linux/vmalloc.h>/* vmalloc */
 #include <linux/genhd.h>
 #include <linux/blkdev.h>
-#include <linux/hdreg.h>
+#include <linux/hdreg.h>  /* HDIO_GETGEO partitioning*/
+#include <linux/slab.h>	  /* kmmalloc */
+#include <linux/fcntl.h>  /* File I/O */
+#include <linux/sched.h>
+#include <linux/timer.h>
+#include <linux/kdev_t.h>
+#include <linux/buffer_head.h>
+#include <linux/bio.h>
+#include <linux/crypto.h>
+#include <linux/scatterlist.h>
 
-MODULE_LICENSE("Dual BSD/GPL");
+MODULE_LICENSE("GPL");
 static char *Version = "1.4";
 
 static int major_num = 0;
 module_param(major_num, int, 0);
+
 static int logical_block_size = 512;
 module_param(logical_block_size, int, 0);
+
 static int nsectors = 1024; /* How big the drive is */
 module_param(nsectors, int, 0);
 
@@ -67,7 +78,6 @@ static void sbd_transfer(struct sbd_device *dev, sector_t sector,
   u8 *dest;
   u8 *source;
 
-  // If write, else read 
   if(write) {
     printk("sbd.c :: sbd_transfer() | WRITE - Transferring Data \n");
   }
