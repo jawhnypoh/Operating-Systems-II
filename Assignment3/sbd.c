@@ -67,6 +67,7 @@ static void sbd_transfer(struct sbd_device *dev, sector_t sector,
   u8 *dest;
   u8 *source;
 
+  // If write, else read 
   if(write) {
     printk("sbd.c :: sbd_transfer() | WRITE - Transferring Data \n");
   }

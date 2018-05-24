@@ -1,0 +1,137 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+
+\usepackage{geometry}
+\geometry{margin = 0.75in}
+
+\title{Writing Assignment One}
+\author{Andrew Davis\\CS 444 Oregon State University\\Spring 2018}
+\date {17 April 2018}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+	\maketitle
+    \begin{singlespace}
+        \begin{abstract}
+        % 6. Fill in your abstract    
+		This assignment will cover the basics of process and thread management, as well as CPU scheduling in the Windows operating system (OS), and FreeBSD.
+		These two operating systems will be compared to Linux, looking at differences, similiarities, and reasons for these comparisons to exist.
+        	
+%This document is written using one sentence per line.
+%This allows you to have sensible diffs when you use \LaTeX with version control, as well as giving a quick visual test to see if sentences are too short/long.
+%If you have questions, ``The Not So Short Guide to LaTeX'' is a great resource (\url{https://tobi.oetiker.ch/lshort/lshort.pdf})
+        \end{abstract}     
+    \end{singlespace}
+\end{titlepage}
+\newpage
+\pagenumbering{arabic}
+
+\clearpage
+
+% 8. now you write!
+\section{Windows Overview}
+	Windows operating system (OS) is a, "priority-drive, preemptive scheduling system," \cite{windowswebsite}.
+	This means that the system assigns priority to threads (not processes) based on importance.
+	Once these threads are given a priority number, the highest priority is ran, while those that are less important wait their turn.
+	Threads are given a set amount of time to run, at which a new thread is ran when that time is met.
+	At any point, if a thread of higher priority comes about, the old thread (lower priority) is cut off and the new one (higher priority) begins to run.\\
+
+	A restriction on these high priority threads is the processor it is running on, creating a condition known as \textit{processor affinity}.
+	Here, the thread can be bound, or unbound, to a specific CPU or processor, meaning a thread with high priority may not be allowed to run on a certain processor.\\
+
+	The scheduler for Windows OS takes place in the kernel \cite{windowswebsite}. 
+	Rather than a scheduler function, the kernel dispatches threads based on priority, as stated above.
+	There are three reasons that may require a thread to be dispatched \cite{windowswebsite}:
+	\begin{enumerate}
+		\item a new thread has become readily available,
+		\item a thread exits its run state due to its time being up, it is interrupted, it enters a wait state, etc.,
+		\item the priority of a thread changes - is lower than a new thread, or
+		\item a thread must run on a different processor
+	\end{enumerate}
+	Once any of these four things happen, the OS performs something called a context switch on the thread affected. 
+	This saves data from the previously running thread, and switches to a new one. \\
+
+	A large part of Windows is its concentration on threads. 
+	As a result, resources are not devoted to figuring out which threads belong to which processes.
+	An example is outlined in \cite{windowswebsite};
+	say there are two processes \textit A and \textit B. 
+	If \textit A has 5 threads, and \textit\ B has 2 threads, then the CPU devotes \(\frac{1}{7}\)th of the time to each one, as opposed to 50\% of processing power to \textit A and 50\% of processing power to \textit B.\\
+
+	In conclusion, it is important to note that the key of process management in Windows is the focus on threads. The importance of this will be covered when comparing/contrasting Windows to Linux.
+	
+\section{FreeBSD Overview}
+	FreeBSD is a Unix based OS that is related to Linux. The way in which it manages processes is very similar, if not a mirror image on Linux. Due to the similarities, the overview of FreeBSD will be short. \\
+
+	FreeBSD is a split up into two levels of schedulers: low-level and a high level \cite{bsdschedule}.
+	The first, low-level scheduler, runs everytime an existing thread is blocked and a new one must be ran.
+	The kernel organizes run queues that place threads in order from low- to high-priority \cite{bsdschedule}.
+	When this happens, the low-level scheduler's job is to select the thread with the highest priority and run it.
+	The high-level scheduler takes runnable threads and assigns them a level of priority.
+	Once this is one, the thread is placed in the run queue and responsibility is handed off to the low-level scheduler. \\ 
+
+	As far as processes and threads go, Linux and FreeBSD are similar.
+
+\section{Comparison}
+	The largest differences between the three operating systems lie between Windows and Linux.
+	This is largely due to the fact that Windows is not Unix based, like Linux and FreeBSD.
+	Some notable differences between Windows and Linux are:
+	\begin{itemize}
+		\item closing a parent process in Linux kills all children processes, whereas the same action in Windows allows the children to stay alive \cite{windowdiff}, and
+		\item the only shared information between parent and child processes (threads in the case of Windows), is the parent process id, whereas Linux shares much more \cite{windowdiff}.
+	\end{itemize} 
+
+	While there are large differences in the management of process between the two systems, the CPU scheduling shares some similiarities, such as:
+	\begin{itemize}
+		\item priority in processes/threads are used to calculate execution, and
+		\item both systems have processor affinity.
+	\end{itemize}
+
+	As far as Linux and FreeBSD go, the differences are near non-existant for process/thread management.
+	This is due to, as stated earlier, their branching from Unix.
+
+%Bibliography referenced from: https://www.sharelatex.com/learn/Bibliography_management_with_bibtex
+\newpage
+\begin{thebibliography}{10}
+	\bibitem{windowswebsite}
+	Mark E. Russinovich, David A. Solomon.
+	Processes, Threads, and Jobs in the Windows Operating Systems.
+	June 17 2009.
+	\\\texttt{https://www.microsoftpressstore.com/articles/article.aspx?p=2233328\&seqNum=7}
+
+	\bibitem{bsdschedule}
+	Marshall K. McKusick, George V. Neville-Neil, Robert N.M. Watson.
+	Process Management in the FreeBSD Operating System.
+	October 2 2014.
+	\\\textit{www.informit.com/articles/article.aspx?p=2249436\&seqNum=4}
+
+	\bibitem{windowdiff}
+	Shankar Raman.
+	Process bahavior in Windows and Linux.
+	September 22 2014.
+	\\\texttt{https://shankaraman.wordpress.com/tag/differences-between-windows-and-linux-process}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{thebibliography}
+\end{document}
