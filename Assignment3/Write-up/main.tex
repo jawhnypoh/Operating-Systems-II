@@ -1,0 +1,107 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\usepackage{geometry}
+\geometry{margin = 0.75in}
+
+\title{Group Assignment Three}
+\author{Yeongae Lee, Johnny Po, Andrew Davis\\CS 444 Oregon State University\\Spring 2018}
+\date {17 April 2018}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+	\maketitle
+    \begin{singlespace}
+        \begin{abstract}
+        % 6. Fill in your abstract    
+		In order to have an understanding of low level systems, it is important to have a clear idea of block devices and encryption. The scope of the encrypted block device problem is in the problem of encryption: when the device module creation needs to be completed before a device driver can be successfully produced. This approach uses the Linux Cryptography API in order to make sure that all files are correctly encrypted. 
+        	
+%This document is written using one sentence per line.
+%This allows you to have sensible diffs when you use \LaTeX with version control, as well as giving a quick visual test to see if sentences are too short/long.
+%If you have questions, ``The Not So Short Guide to LaTeX'' is a great resource (\url{https://tobi.oetiker.ch/lshort/lshort.pdf})
+        \end{abstract}     
+    \end{singlespace}
+\end{titlepage}
+\newpage
+
+\section{Design}
+We will approach the problem first by starting with a basic block driver that includes no encryption. We have found a copy of a basic block driver online, and will be building our encryption API code based off of that. First, we mess around with this simple block driver to build an understanding of how it works. Then we will gradually build the encryption part of the block driver, most of it through the use of one function, whose sole purpose is to handle IO requests. Basically, this method checks every single block and determines whether or not it should encrypt/decrypt and read/write. Some work will also be done in the init() function to instantiate some cryptography factors.
+
+\section{Questions}
+
+    \begin{enumerate}
+        \item What do you think the main point of this assignment is? \\
+            Main point of this assignment is that learn how to a RAM Disk device driver runs on the Linux Kernel’s Crypto API. We changed the sbd.c file to create a file which allocates a chunk of memory. Then, we run it on the Linux Kernel’s Crypto API. 
+            
+        \item How did you personally approach the problem? Design decisions, algorithm, etc. \\
+            We searched for a RAM Disk device driver, the Linux Kernel’s Crypto API and a block cypher to get somewhat idea for this assignment. We looked for a basic block driver which does not includes encryption. We built encryption block driver based on it. After we finished to write file, we had to figure out running block driver on the Linux Kernel. We moved sbd.c file to the under linux-yocto-3.19.2/drivers/block directory. Makefile and Kconfig files are also edited for running .c file on the Linux Kernel. Then, we run block driver with the Linux Kernel's Crypto API.
+
+        \item How did you ensure your solution was correct? Testing details, for instance. \\
+            We added the sbd.c file under linux-yocto-3.19.2/drivers/block directory. We also changed Makefile and Kconfig files to run .c file on the Linux Kernel. The ‘make -j4 all’ command successfully created sbd.ko file. Therefore, we ensure our solution correct. TAs need to patch the submitted Assignment3.patch file on the block directory. Then, they need to run file with the ‘make -j4 all’ command.
+
+        \item What did you learn? \\
+            Two main works are creating sbd.c file and running it with Linux Kernel’s Crypto API. Therefore, we learned how a RAM Disk device driver is work with the Linux Kernel’s Crypto API.
+            
+     \end{enumerate} 
+
+\section{Version Control Log}
+\begin{tabular}{l l l}\textbf{Detail} & \textbf{Author} & \textbf{Description}\\\hline
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/14bddd290c87a184296eefc095c6dd2ba3256e4a#diff-cdc563e32f1e86ffa25b1fdb325339b1}{14bdddc2} & Johnny Po & Initializing folder for Assignment 3 and adding sbd.c\\\hline
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/0b5f368176cdb6131b359d5a22a3073f5ab753cd#diff-cdc563e32f1e86ffa25b1fdb325339b1}{0b5f368} & Johnny Po & Adding Tex Writeup File\\\hline 
+
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/32351b864824705663de1876d36a2f5b328c2ecb}{32351b8}& Yeongae Lee & Creating patch file\\\hline 
+
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/18672d4f9a97619428c6871acb6bf42fb8a4da1a}{18672d4}& Yeongae Lee & Re-creating patch file\\\hline 
+
+%add more
+
+
+\end{tabular}
+
+\section{Work Log}
+\begin{itemize}
+\item Begin doing research on the assignment background, and what it is looking for 
+\item Get sbd.c file from online source and begin modifications
+\item source /scratch/opt/environment-setup-i586-poky-linux
+\item Move sbd.c, Kconfig, Makefile to proper directory(linux-yocto-3.19.2/drivers/block) 
+\item make -j4 all (creates the sbd.ko file, or is supposed to)
+\end{itemize}
+
+
+
+
+\pagenumbering{arabic}
+
+\clearpage
+
+\end{document}
+
+%Bibliography referenced from: https://www.sharelatex.com/learn/Bibliography_management_with_bibtex
+\newpage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{thebibliography}
+\end{document}
