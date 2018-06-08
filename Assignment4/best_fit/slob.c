@@ -216,7 +216,7 @@ static void slob_free_pages(void *b, int order)
  */
 static void *slob_page_alloc(struct page *sp, size_t size, int align)
 {
-/*TODO: Yeongae Lee is working on this function. Please! change other functions*/
+/*TODO: */
 
 	slob_t *prev, *cur, *aligned = NULL;
 	slob_t *best_prev = NULL, *best = NULL, *best_aligned = NULL;
@@ -333,6 +333,21 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 			list_move_tail(slob_list, prev->next);
 		break;
 	}
+
+	// Loop through each linked list to find free space 
+	temp = &free_slob_small;
+	list_for_each_entry(sp, temp, list) {
+		freeUnits += sp->units;
+	}
+	temp = &free_slob_medium;
+	list_for_each_entry(sp, temp, list) {
+		freeUnits += sp->units;
+	}
+	temp = &free_slob_large;
+	list_for_each_entry(sp, temp, list) {
+		freeUnits += sp->units;
+	}
+
 	spin_unlock_irqrestore(&slob_lock, flags);
 
 	/* Not enough space: must allocate a new page */
@@ -352,6 +367,9 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		b = slob_page_alloc(sp, size, align);
 		BUG_ON(!b);
 		spin_unlock_irqrestore(&slob_lock, flags);
+
+		// Alocate Page 
+		slobPageCount++;
 	}
 	if (unlikely((gfp & __GFP_ZERO) && b))
 		memset(b, 0, size);
@@ -386,6 +404,10 @@ static void slob_free(void *block, int size)
 		__ClearPageSlab(sp);
 		page_mapcount_reset(sp);
 		slob_free_pages(b, 0);
+
+		// Free Page and Decrement 
+		slobPageCount--;
+
 		return;
 	}
 
@@ -492,6 +514,7 @@ void *__kmalloc(size_t size, gfp_t gfp)
 }
 EXPORT_SYMBOL(__kmalloc);
 
+#ifdef CONFIG_TRACING
 void *__kmalloc_track_caller(size_t size, gfp_t gfp, unsigned long caller)
 {
 	return __do_kmalloc_node(size, gfp, NUMA_NO_NODE, caller);
@@ -503,6 +526,7 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t gfp,
 {
 	return __do_kmalloc_node(size, gfp, node, caller);
 }
+#endif
 #endif
 
 void kfree(const void *block)
