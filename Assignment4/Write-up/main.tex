@@ -1,0 +1,84 @@
+\documentclass[onecolumn, draftclsnofoot,10pt, compsoc]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\usepackage{geometry}
+\geometry{margin = 0.75in}
+
+\title{Project 4: The SLOB SLAB}
+\author{Yeongae Lee, Johnny Po, Andrew Davis\\CS 444 Oregon State University\\Spring 2018}
+\date {8 June 2018}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{titlepage}
+    \pagenumbering{gobble}
+	\maketitle
+    \begin{singlespace}
+        \begin{abstract}
+        In order to master the Linux kernel, and all of it's memory allocation services, one must have a solid knowledge and foundation of memory management. The point of the SLOB SLAB problem is actually quite simple: instead of using the first location, we need to develop an algorithm to find the best location in memory that's to be chosen in order to increase performance. This approach modifies the SLOB's first fit algorithm into a best fit algorithm for best results. 
+        % 6. Fill in your abstract    
+		
+        	
+%This document is written using one sentence per line.
+%This allows you to have sensible diffs when you use \LaTeX with version control, as well as giving a quick visual test to see if sentences are too short/long.
+%If you have questions, ``The Not So Short Guide to LaTeX'' is a great resource (\url{https://tobi.oetiker.ch/lshort/lshort.pdf})
+        \end{abstract}     
+    \end{singlespace}
+\end{titlepage}
+\newpage
+
+\section{Design}
+The first-fit algorithm considers the speed to search empty space as the most important thing. The best-fit algorithm forces on finding the best empty space to allocate memory. Therefore, the best-fit is slower than the first-fit but it will spend less memory pages. Therefore, we added the step to find the best memory location in the page. The slob\_page\_alloc() function allocates a block within a given page, so we change this function. The first-fit slob\_page\_alloc() function allocates memory, if it find the space which is bigger than memory size. However, the best-fit slob\_page\_alloc() function compares empty spaces in the page and find the space which is the smallest space in the page but bigger than memory size.
+
+
+
+\section{Questions}
+
+    \begin{enumerate}
+        \item What do you think the main point of this assignment is? \\
+            The main purpose of this assignment is to search about diverse memory allocator algorithms. How memory allocators work in the kernel and what is different between memory allocators. The mm directory contains memory management code. The slob.c is heap allocator. We changed the first-fit slob.c to create the best-fit algorithm slob.c\\
+            
+        \item How did you personally approach the problem? Design decisions, algorithm, etc. \\
+        	First, we searched about the first-fit and the best-fit algorithms and understood how the first-fit slob.c code works. We had to compare the first-fit and the best-fit algorithms, so before we start to write the best-fit code, we tried to properly understand both algorithms. The first-fit algorithm allocates memory if the page has enough space to allocate memory. However, the best-fit algorithm allocates memory into the best space in the page. Therefore best-fit algorithm spend more time to find the space to allocate memory. \\
+
+        \item How did you ensure your solution was correct? Testing details, for instance. \\
+            We wrote a script called test.c that tests our solution and displays the fragmentation result of the best fit algorithm. This is calculated by dividing the used memory by the free memory, and is eventually calculated into a percentage. We compared the results of the best fit algorithm with the original first fit algorithm and saw a big increase in performance. \\
+
+        \item What did you learn? \\
+            We learned difference between the first-fit and the best-fit algorithms to allocate memory into stack. Also, we wrote memory allocator and run it on the Linux kernel. 
+
+            
+     \end{enumerate} 
+
+\section{Version Control Log}
+\begin{tabular}{l l l}\textbf{Detail} & \textbf{Author} & \textbf{Description}\\\hline
+
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/e8fbf20c5153a6da5856d5aaf66996695ce3e6c0#diff-15bd4745e12a2d3107c6423ab7df984b}{e8fbf20} & Johnny Po & Adding slab and slob files \\\hline
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/6ded256d261baa2aa2370bac5ff21e6795faf131#diff-15bd4745e12a2d3107c6423ab7df984b}{6ded256} & Johnny Po & Adding slab and slob from best fit \\\hline 
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/ad77eff948d13d24058266a4e33f3da330691db4#diff-15bd4745e12a2d3107c6423ab7df984b}{ad77eff} & Johnny Po & Adding syscall files \\\hline 
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/fb96116ab80963f1ca2cd2b64d5d3b8b5ba11648#diff-15bd4745e12a2d3107c6423ab7df984b}{fb96116} & Johnny Po & Updating slob and slab files\\\hline 
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/706e4ea960f803126e4725dcb7794d2b22273022#diff-15bd4745e12a2d3107c6423ab7df984b}{706e4ea} & Johnny Po & Updated best fit slob.c and added testing script\\\hline 
+
+
+%add more
+
+
+\end{tabular}
+
+\section{Work Log}
+\begin{itemize}
+\item Begin doing research on the assignment background, and what it is looking for 
+\item Copy slob.c file in mm directory and begin modifications (create best-fit algorithm slob.c)
+\item source /scratch/opt/environment-setup-i586-poky-linux
+\item Move slob.c, to proper directory(linux-yocto-3.19.2/drivers/mm) 
+\item make -j4 all (creates the slob.o file, or is supposed to)
+\end{itemize}
+
+\pagenumbering{arabic}
+
+\clearpage
+
+\end{document}
