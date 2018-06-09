@@ -61,6 +61,7 @@ The first-fit algorithm considers the speed to search empty space as the most im
 \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/ad77eff948d13d24058266a4e33f3da330691db4#diff-15bd4745e12a2d3107c6423ab7df984b}{ad77eff} & Johnny Po & Adding syscall files \\\hline 
 \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/fb96116ab80963f1ca2cd2b64d5d3b8b5ba11648#diff-15bd4745e12a2d3107c6423ab7df984b}{fb96116} & Johnny Po & Updating slob and slab files\\\hline 
 \href{https://github.com/jawhnypoh/Operating-Systems-II/commit/706e4ea960f803126e4725dcb7794d2b22273022#diff-15bd4745e12a2d3107c6423ab7df984b}{706e4ea} & Johnny Po & Updated best fit slob.c and added testing script\\\hline 
+\href{https://github.com/jawhnypoh/Operating-Systems-II/commit/2fc39bc0732a9cc1edbba211ec2ff314afb70278#diff-15bd4745e12a2d3107c6423ab7df984b}{2fc39bc} & Johnny Po & Fixed slob.c errors\\\hline
 
 
 %add more
@@ -75,6 +76,8 @@ The first-fit algorithm considers the speed to search empty space as the most im
 \item source /scratch/opt/environment-setup-i586-poky-linux
 \item Move slob.c, to proper directory(linux-yocto-3.19.2/drivers/mm) 
 \item make -j4 all (creates the slob.o file, or is supposed to)
+\item Boot up the VM in order to test the slob file 
+\item Use scp to copy over the file into the VM to test 
 \end{itemize}
 
 \pagenumbering{arabic}
@@ -82,3 +85,10 @@ The first-fit algorithm considers the speed to search empty space as the most im
 \clearpage
 
 \end{document}
+
+
+
+
+
+
+
